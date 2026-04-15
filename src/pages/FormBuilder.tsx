@@ -3,10 +3,13 @@ import FormHeader from "@/features/form-builder/components/FormHeader";
 import { useFormBuilder } from "@/features/form-builder/hooks/useFormBuilder";
 
 const FormBuilder = () => {
-  const { fields, addField, updateField, deleteField } = useFormBuilder();
+  const { form, fields, addField, updateField, deleteField, updateForm } = useFormBuilder();
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col items-center p-6 gap-6">
-      <FormHeader />
+      <FormHeader
+        form={form}
+        updateForm={updateForm}
+      />
 
       <FieldList
         fields={fields}

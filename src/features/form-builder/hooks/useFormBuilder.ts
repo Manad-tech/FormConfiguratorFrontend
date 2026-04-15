@@ -9,6 +9,10 @@ export type Field = {
 };
 
 export const useFormBuilder = () => {
+  const [form, setForm] = useState({
+    title: "",
+    description: "",
+  });
   const [fields, setFields] = useState<Field[]>([]);
 
   const addField = () => {
@@ -33,10 +37,19 @@ export const useFormBuilder = () => {
   const deleteField = (id: string) => {
     setFields((prev) => prev.filter((f) => f.id !== id));
   };
+
+  const updateForm = (key: string, value: string) => {
+    setForm((prev) => ({
+      ...prev,
+      [key]: value,
+    }));
+  };
   return {
+    form,
     fields,
     addField,
     updateField,
     deleteField,
+    updateForm,
   };
 };
