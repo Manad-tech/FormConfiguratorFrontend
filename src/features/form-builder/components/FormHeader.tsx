@@ -12,21 +12,21 @@ type Props = {
 
 const FormHeader = ({ form, updateForm }: Props) => {
   return (
-    <Card className='w-full max-w-2xl border'>
+    <Card className='w-full max-w-2xl bg-zinc-900 border-gray-900'>
       <CardContent className='p-6 flex flex-col gap-4'>
 
         <Input
           placeholder='Form Title'
           value={form.title}
           onChange={(e) => updateForm('title', e.target.value)}
-          className='text-lg font-semibold border-b-2'
+          className='text-lg font-semibold border-none '
         />
 
         <Textarea
           placeholder='Form Description (option)'
           value={form.description}
           onChange={(e) => updateForm('description', e.target.value)}
-          className=''
+          className='border-none'
         />
       </CardContent>
     </Card>
