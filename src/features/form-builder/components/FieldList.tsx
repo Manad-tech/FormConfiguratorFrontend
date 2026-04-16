@@ -22,7 +22,7 @@ const FieldList = ({ fields, addField, updateField, deleteField}: Props) => {
         />
       ))}
 
-      <Button className="bg-blue-800 py-5 hover:bg-blue-600" variant="destructive" onClick={addField}>
+      <Button className="w-full bg-blue-600 text-white font-medium rounded-lg py-5 hover:bg-blue-700" variant="destructive" onClick={addField}>
         Add Field
       </Button>
       
