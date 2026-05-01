@@ -31,6 +31,10 @@ const FormPreviewPage = () => {
       </div>
 
       <FormPreview fields={fields} />
+
+      <Button onClick={() => navigate('/responses')}>
+        View Responses
+      </Button>
     </div>
   );
 };

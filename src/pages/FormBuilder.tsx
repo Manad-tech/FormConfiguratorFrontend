@@ -17,6 +17,9 @@ const FormBuilder = () => {
     updateOption,
     removeOption,
     addOption,
+    groups,
+    formType,
+    setFormType
   } = useFormBuilder();
 
   const [mode, setMode] = useState<"builder" | "preview">("builder");
@@ -34,7 +37,7 @@ const FormBuilder = () => {
     navigate("/preview");
   };
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0f172a] vis-[#020617] to to-black flex flex-col items-center p-6 gap-6">
+    <div className="min-h-screen bg-linear-to-br from-[#0f172a] vis-[#020617] to to-black flex flex-col items-center p-6 gap-6">
       <FormHeader form={form} updateForm={updateForm} />
 
       <Button
@@ -46,6 +49,41 @@ const FormBuilder = () => {
       >
         Reset Form
       </Button>
+
+      <div className="flex gap-2 mb-4">
+        <Button
+          onClick={() => setFormType("normal")}
+          className={`px-4 py-2 ${
+            formType === "normal"
+              ? "bg-blue-600 text-white"
+              : "bg-white/10 text-gray-300"
+          }`}
+        >
+          Normal
+        </Button>
+
+        <Button
+          onClick={() => setFormType("grouped")}
+          className={`px-4 py-2 ${
+            formType === "grouped"
+              ? "bg-blue-600 text-white"
+              : "bg-white/10 text-gray-300"
+          }`}
+        >
+          Grouped
+        </Button>
+
+        <Button
+          onClick={() => setFormType("step")}
+          className={`px-4 py-2 ${
+            formType === "step"
+              ? "bg-blue-600 text-white"
+              : "bg-white/10 text-gray-300"
+          }`}
+        >
+          Step
+        </Button>
+      </div>
 
       <div className="flex gap-2">
         <Button

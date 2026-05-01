@@ -11,7 +11,7 @@ type Props = {
 const FormPreview = ({ fields }: Props) => {
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
-
+  // console.log(fields);
   const handleChange = (id: string, value: any) => {
     setFormData((prev) => ({
       ...prev,
@@ -25,6 +25,7 @@ const FormPreview = ({ fields }: Props) => {
   };
 
   const renderField = (field: Field) => {
+    // console.log(field.type);
     switch (field.type) {
       case "text":
         return (
@@ -51,16 +52,17 @@ const FormPreview = ({ fields }: Props) => {
           />
         );
 
-      case "dropdown":
+      case "select":
         return (
           <select
             onChange={(e) => handleChange(field.id, e.target.value)}
             className="w-full px-3 py-2 rounded bg-slate-800 border border-gray-600 text-white"
           >
             <option value="">Select...</option>
-            {field.options.map((opt, i) => (
-              <option key={i}>{opt}</option>
-            ))}
+            {field.options.map((opt, i) => {
+              // console.log(opt);
+              return <option key={i}>{opt}</option>;
+            })}
           </select>
         );
 
@@ -104,9 +106,8 @@ const FormPreview = ({ fields }: Props) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    console.log('Submit clicked')
-
     const newErrors: Record<string, string> = {};
+    // console.log(newErrors)
 
     for (const field of fields) {
       const value = formData[field.id];
@@ -117,14 +118,14 @@ const FormPreview = ({ fields }: Props) => {
       }
     }
 
-    if (newErrors.length > 0) {
-      setErrors(newErrors);
-      return;
-    }
+    const prev = JSON.parse(localStorage.getItem("responses") || "[]");
+
+    localStorage.setItem("responses", JSON.stringify([...prev, formData]));
 
     setErrors({});
+    // console.log(errors)
 
-    console.log("Form Data:", formData);
+    // console.log("Form Data:", formData);
     alert("Form submitted successfully 🚀");
   };
 
@@ -148,7 +149,10 @@ const FormPreview = ({ fields }: Props) => {
         </div>
       ))}
 
-      <button type="submit" className="bg-green-600 py-2 rounded mt-4 cursor-pointer">
+      <button
+        type="submit"
+        className="bg-green-600 py-2 rounded mt-4 cursor-pointer"
+      >
         Submit
       </button>
     </form>
