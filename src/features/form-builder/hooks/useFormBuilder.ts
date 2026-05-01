@@ -24,7 +24,7 @@ export const useFormBuilder = () => {
   const [groups, setGroups] = useState<Group[]>([
     {
       id: Date.now(),
-      title: "Untitled Section",
+      title: "",
       fields: [],
     },
   ]);
@@ -42,7 +42,7 @@ export const useFormBuilder = () => {
           : [
               {
                 id: Date.now(),
-                title: "Untitled Section",
+                title: "",
                 fields: [],
               },
             ],
@@ -154,7 +154,7 @@ export const useFormBuilder = () => {
       ...prev,
       {
         id: Date.now(),
-        title: "New Section",
+        title: "",
         fields: [],
       },
     ]);
@@ -223,8 +223,8 @@ export const useFormBuilder = () => {
 
   return {
     form,
-    fields, // keep
-    groups, // new
+    fields,
+    groups,
     formType,
     setFormType,
 

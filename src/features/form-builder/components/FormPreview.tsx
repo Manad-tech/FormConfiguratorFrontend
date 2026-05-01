@@ -1,17 +1,25 @@
 import { Label } from "@/components/ui/label";
-import type { Field } from "../features/form-builder/hooks/useFormBuilder";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
+import type { Field } from "../features/form-builder/hooks/useFormBuilder";
 
-type Props = {
+type Group = {
+  id: number;
+  title: string;
   fields: Field[];
 };
 
-const FormPreview = ({ fields }: Props) => {
+type Props = {
+  fields: Field[];
+  groups?: Group[];
+  formType?: string;
+};
+
+const FormPreview = ({ fields, groups = [], formType = "normal" }: Props) => {
   const [formData, setFormData] = useState<Record<string, any>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
-  // console.log(fields);
+
   const handleChange = (id: string, value: any) => {
     setFormData((prev) => ({
       ...prev,
@@ -25,7 +33,6 @@ const FormPreview = ({ fields }: Props) => {
   };
 
   const renderField = (field: Field) => {
-    // console.log(field.type);
     switch (field.type) {
       case "text":
         return (
@@ -59,10 +66,9 @@ const FormPreview = ({ fields }: Props) => {
             className="w-full px-3 py-2 rounded bg-slate-800 border border-gray-600 text-white"
           >
             <option value="">Select...</option>
-            {field.options.map((opt, i) => {
-              // console.log(opt);
-              return <option key={i}>{opt}</option>;
-            })}
+            {field.options.map((opt, i) => (
+              <option key={i}>{opt}</option>
+            ))}
           </select>
         );
 
@@ -103,19 +109,26 @@ const FormPreview = ({ fields }: Props) => {
     }
   };
 
+  // 🔥 FLATTEN ALL FIELDS FOR VALIDATION
+  const allFields =
+    formType === "grouped" ? groups.flatMap((g) => g.fields) : fields;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     const newErrors: Record<string, string> = {};
-    // console.log(newErrors)
 
-    for (const field of fields) {
+    for (const field of allFields) {
       const value = formData[field.id];
 
       if (field.required && (!value || value.length === 0)) {
         newErrors[field.id] = `${field.label || "Field"} is required`;
-        return;
       }
+    }
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
     }
 
     const prev = JSON.parse(localStorage.getItem("responses") || "[]");
@@ -123,38 +136,81 @@ const FormPreview = ({ fields }: Props) => {
     localStorage.setItem("responses", JSON.stringify([...prev, formData]));
 
     setErrors({});
-    // console.log(errors)
-
-    // console.log("Form Data:", formData);
     alert("Form submitted successfully 🚀");
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="w-full max-w-2xl mx-auto flex flex-col gap-4 text-white"
+      className="min-h-screen flex justify-center px-4 py-10 bg-[#020617] text-white"
     >
-      {fields.map((field) => (
-        <div key={field.id} className="flex flex-col gap-2">
-          <Label className="text-sm text-gray-300">
-            {field.label || "Untitled Label"}
-            {field.required && <span className="text-red-500 ml-1">*</span>}
-          </Label>
+      <div className="w-full max-w-2xl space-y-6">
+        {/* 🟢 NORMAL FORM */}
+        {formType === "normal" &&
+          fields.map((field) => (
+            <div
+              key={field.id}
+              className="bg-[#0f172a] border border-white/10 rounded-2xl p-5 space-y-2"
+            >
+              <Label className="text-sm text-gray-300">
+                {field.label || "Untitled Label"}
+                {field.required && <span className="text-red-500 ml-1">*</span>}
+              </Label>
 
-          {renderField(field)}
+              <div className="mt-1">{renderField(field)}</div>
 
-          {errors[field.id] && (
-            <span className="text-red-500 text-xs">{errors[field.id]}</span>
-          )}
-        </div>
-      ))}
+              {errors[field.id] && (
+                <span className="text-red-500 text-xs">{errors[field.id]}</span>
+              )}
+            </div>
+          ))}
 
-      <button
-        type="submit"
-        className="bg-green-600 py-2 rounded mt-4 cursor-pointer"
-      >
-        Submit
-      </button>
+        {/* 🟣 GROUPED FORM */}
+        {formType === "grouped" &&
+          groups
+            .filter((group) => group.fields.length > 0) // 🚨 REMOVE EMPTY SECTIONS
+            .map((group) => (
+              <div
+                key={group.id}
+                className="bg-[#0f172a] border border-white/10 rounded-2xl p-6 space-y-5"
+              >
+                {/* SECTION TITLE */}
+                <h2 className="text-lg font-semibold border-b border-white/10 pb-2">
+                  {group.title}
+                </h2>
+
+                {/* FIELDS */}
+                <div className="space-y-4">
+                  {group.fields.map((field) => (
+                    <div key={field.id} className="space-y-2">
+                      <Label className="text-sm text-gray-300">
+                        {field.label || "Untitled Label"}
+                        {field.required && (
+                          <span className="text-red-500 ml-1">*</span>
+                        )}
+                      </Label>
+
+                      <div className="mt-1">{renderField(field)}</div>
+
+                      {errors[field.id] && (
+                        <span className="text-red-500 text-xs">
+                          {errors[field.id]}
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+
+        {/* SUBMIT BUTTON */}
+        <button
+          type="submit"
+          className="w-full bg-green-600 hover:bg-green-500 transition py-3 rounded-xl font-medium"
+        >
+          Submit
+        </button>
+      </div>
     </form>
   );
 };

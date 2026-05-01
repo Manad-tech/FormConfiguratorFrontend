@@ -23,18 +23,20 @@ const FormPreviewPage = () => {
 
         <Button
           variant="outline"
-          onClick={() => navigate('/')}
+          onClick={() => navigate("/")}
           className="mb-4 text-sm bg-transparent border border-blue-800 text-blue-400 hover:text-white hover:bg-blue-500 cursor-pointer"
         >
           ← Back to Builder
         </Button>
       </div>
 
-      <FormPreview fields={fields} />
+      <FormPreview
+        fields={data.fields || []}
+        groups={data.groups || []}
+        formType={data.formType || "normal"}
+      />
 
-      <Button onClick={() => navigate('/responses')}>
-        View Responses
-      </Button>
+      <Button onClick={() => navigate("/responses")}>View Responses</Button>
     </div>
   );
 };

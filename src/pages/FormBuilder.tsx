@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import FieldList from "@/features/form-builder/components/FieldList";
 import FormHeader from "@/features/form-builder/components/FormHeader";
 import FormPreview from "@/features/form-builder/components/FormPreview";
+import GroupedFieldList from "@/features/form-builder/components/GroupedFieldList";
 import { useFormBuilder } from "@/features/form-builder/hooks/useFormBuilder";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -19,7 +20,12 @@ const FormBuilder = () => {
     addOption,
     groups,
     formType,
-    setFormType
+    setFormType,
+    addGroup,
+    addFieldToGroup,
+    updateGroupField,
+    updateGroupTitle,
+    deleteGroupField,
   } = useFormBuilder();
 
   const [mode, setMode] = useState<"builder" | "preview">("builder");
@@ -32,6 +38,8 @@ const FormBuilder = () => {
       JSON.stringify({
         form,
         fields,
+        groups,
+        formType,
       }),
     );
     navigate("/preview");
@@ -110,17 +118,32 @@ const FormBuilder = () => {
       </div>
 
       {mode === "builder" ? (
-        <FieldList
-          fields={fields}
-          addField={addField}
-          updateField={updateField}
-          deleteField={deleteField}
-          updateOption={updateOption}
-          removeOption={removeOption}
-          addOption={addOption}
-        />
+        <>
+          {formType === "normal" && (
+            <FieldList
+              fields={fields}
+              addField={addField}
+              updateField={updateField}
+              deleteField={deleteField}
+              updateOption={updateOption}
+              removeOption={removeOption}
+              addOption={addOption}
+            />
+          )}
+
+          {formType === "grouped" && (
+            <GroupedFieldList
+              groups={groups}
+              addGroup={addGroup}
+              addFieldToGroup={addFieldToGroup}
+              updateGroupField={updateGroupField}
+              updateGroupTitle={updateGroupTitle}
+              deleteGroupField={deleteGroupField}
+            />
+          )}
+        </>
       ) : (
-        <FormPreview fields={fields} />
+        <FormPreview fields={fields} groups={groups} formType={formType} />
       )}
     </div>
   );
